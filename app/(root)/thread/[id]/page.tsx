@@ -7,7 +7,7 @@ import ThreadCard from "@/components/cards/ThreadCard";
 import { fetchUser } from "@/lib/actions/user.actions";
 import { fetchThreadById } from "@/lib/actions/thread.action";
 
-//export const revalidate = 0;
+export const revalidate = 0;
 
 const Page = async ({ params }: { params: { id: string } }) => {
   if (!params.id) return null;
@@ -39,7 +39,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
       <div className='mt-7'>
         <Comment
           threadId={thread.id}
-          currentUserImg={userInfo.image}
+          currentUserImg={userInfo.image} //correct tag is userInfo.image not user.imageUrl or vice versa
           currentUserId={JSON.stringify(userInfo._id)}
         />
       </div>
@@ -49,7 +49,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
           <ThreadCard
             key={childItem._id}
             id={childItem._id}
-            currentUserId={childItem?.id || ""}
+            currentUserId={childItem?.id || ""} //or it can be user.id
             parentId={childItem.parentId}
             content={childItem.text}
             author={childItem.author}

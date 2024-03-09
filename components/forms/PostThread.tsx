@@ -16,24 +16,19 @@ import { usePathname, useRouter } from "next/navigation";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createThread } from "@/lib/actions/thread.action";
 import { ThreadValidation } from "@/lib/validations/thread";
+import { useOrganization } from "@clerk/nextjs";
+
 
 interface Props {
-    user: {
-      id: string;
-      objectId: string;
-      username: string;
-      name: string;
-      bio: string;
-      Image: string;
-    };
-    btnTitle: string;
+    userId: string;
   }
 
-function PostThread({ userId }: { userId: string }) {
+function PostThread({ userId }: Props) {
     const router = useRouter();
     const pathname = usePathname();
+    const { organization } = useOrganization();
 
-    const form = useForm({
+    const form = useForm<z.infer<typeof ThreadValidation>>({
         resolver: zodResolver(ThreadValidation),
         defaultValues: {
           thread: '',
@@ -45,10 +40,10 @@ function PostThread({ userId }: { userId: string }) {
         await createThread({
             text: values.thread,
             author: userId,
-            communityId: null,
+            communityId: organization ? organization.id : null,
             path: pathname
         });
-
+        
         router.push("/");
     }
 
@@ -82,7 +77,7 @@ function PostThread({ userId }: { userId: string }) {
             </Button>
             </form>
         </Form>
-    )
+    );
 }
 
 export default PostThread;

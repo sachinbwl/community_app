@@ -6,21 +6,25 @@ import Topbar from "@/components/shared/Topbar";
 import LeftSidebar from "@/components/shared/LeftSidebar";
 import RightSidebar from "@/components/shared/RightSidebar";
 import Bottombar from "@/components/shared/Bottombar";
+import React from "react";
+import { dark } from "@clerk/themes";
+
+
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata = {
-  title: "Threads",
-  description: "A Next.js Meta Threads Application",
+export const metadata: Metadata = {
+  title: "BanyanBonds: Where Words Weave Connections",
+  description: "Join BanyanBonds, a unique community dedicated to the power of words. Dive into discussions, share your thoughts, and connect through poetry and stories in a positive, ad-free space. Unite under the canopy of language and grow with us",
 };
 
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <ClerkProvider>
+    <ClerkProvider appearance={{ baseTheme: dark, }}>
       <html lang="en">
         <body className={inter.className}>
           <Topbar />
@@ -32,7 +36,7 @@ export default function RootLayout({
                 {children}
               </div>
             </section>
-
+            {/* @ts-ignore */}
             <RightSidebar />
           </main>
           <Bottombar />

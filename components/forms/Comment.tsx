@@ -10,13 +10,13 @@ import {
     FormField,
     FormItem,
     FormLabel,
-    FormMessage,
 } from "@/components/ui/form";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CommentValidation } from "@/lib/validations/thread";
 import Image from "next/image";
 import { addCommentToThread } from "@/lib/actions/thread.action";
+
 
 interface Props {
     threadId: string;
@@ -25,7 +25,6 @@ interface Props {
 }
 
 const Comment = ({ threadId, currentUserImg, currentUserId }: Props) => {
-    const router = useRouter();
     const pathname = usePathname();
 
     const form = useForm({
@@ -54,7 +53,7 @@ const Comment = ({ threadId, currentUserImg, currentUserId }: Props) => {
                     <FormLabel>
                         <Image 
                             src={currentUserImg}
-                            alt="Profile image"
+                            alt="current_user"
                             width={48}
                             height={48}
                             className="rounded-full object cover"
@@ -77,7 +76,7 @@ const Comment = ({ threadId, currentUserImg, currentUserId }: Props) => {
             </Button>
             </form>
         </Form>
-    )
+    );
 }
 
 export default Comment;
