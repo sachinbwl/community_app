@@ -1,4 +1,4 @@
-import { fetchUser } from "@/lib/actions/user.actions";
+import { fetchUser, fetchUserList } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import PostThread from "@/components/forms/PostThread";
@@ -12,11 +12,13 @@ async function Page() {
     const userInfo = await fetchUser(user.id);
     if(!userInfo?.onboarded) redirect('/onboarding');
 
+    const userList = await fetchUserList();
+
     return (
         <>
             <h1 className="head-text">Create Thread</h1>
             
-            <PostThread userId={userInfo._id} />
+            <PostThread userId={JSON.stringify(userInfo._id)} userList={userList} />
         </>
     );
 }

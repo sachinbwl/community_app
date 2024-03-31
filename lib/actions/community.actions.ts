@@ -1,12 +1,13 @@
 "use server";
 
-import { FilterQuery, SortOrder } from "mongoose";
+import mongoose, { FilterQuery, SortOrder } from "mongoose";
 
 import Community from "../models/community.model";
 import Thread from "../models/thread.model";
 import User from "../models/user.model";
-
 import { connectToDB } from "../mongoose";
+import { revalidatePath } from "next/cache";
+
 
 export async function createCommunity(
   id: string,
@@ -60,6 +61,11 @@ export async function fetchCommunityDetails(id: string) {
         model: User,
         select: "name username image _id id",
       },
+      {
+        path: "membershipRequests.user",
+        model: User,
+        select: "name username image _id id",
+      }
     ]);
 
     return communityDetails;
@@ -91,6 +97,11 @@ export async function fetchCommunityPosts(id: string) {
             model: User,
             select: "image _id", // Select the "name" and "_id" fields from the "User" model
           },
+        },
+        {
+          path: "likes",
+          model: User,
+          select: "id name image", // Select the "name" and "_id" fields from the "User" model
         },
       ],
     });
@@ -242,26 +253,36 @@ export async function removeUserFromCommunity(
   }
 }
 
-export async function updateCommunityInfo(
-  communityId: string,
-  name: string,
-  username: string,
-  image: string
-) {
+interface Params {
+  communityId: string;
+  name: string;
+  username: string;
+  image: string;
+  bio: string,
+}
+export async function updateCommunityInfo({
+  communityId,
+  name,
+  username,
+  image,
+  bio,
+}: Params): Promise<void> {
   try {
     connectToDB();
 
     // Find the community by its _id and update the information
     const updatedCommunity = await Community.findOneAndUpdate(
       { id: communityId },
-      { name, username, image }
+      { name, username, image, bio }, 
+      { upsert: true } // To return the updated document
     );
 
     if (!updatedCommunity) {
       throw new Error("Community not found");
     }
-
-    return updatedCommunity;
+    // Revalidate the community data for the specific path
+    revalidatePath(`/communities/${communityId}`);
+    
   } catch (error) {
     // Handle any errors
     console.error("Error updating community information:", error);
@@ -299,6 +320,93 @@ export async function deleteCommunity(communityId: string) {
     return deletedCommunity;
   } catch (error) {
     console.error("Error deleting community: ", error);
+    throw error;
+  }
+}
+
+
+export async function requestMembership(userId: string, communityId: string, userEmail: string) {
+  try {
+    connectToDB();
+
+    // Remove additional characters like inverted commas
+    const cleanUserId = userId.replace(/["']/g, "");
+    const cleanCommunityId = communityId.replace(/["']/g, "");
+    const cleanuserEmail = userEmail.replace(/["']/g, "");
+
+    // Find the user by their id
+    const user = await User.findOne({ id: cleanUserId });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Find the community by its id
+    const community = await Community.findOne({ id: cleanCommunityId });
+
+    if (!community) {
+      throw new Error("Community not found");
+    }
+
+    console.log("Community:", community);
+
+        // Check if the user is already a member of the community
+    if (community.members && community.members.some((member: { toString: () => any; }) => member.toString() === user._id.toString())) {
+      throw new Error("User is already a member of the community");
+    }
+
+    // Check if the user has already requested membership
+    if (community.membershipRequests && community.membershipRequests.some((request: { user: { toString: () => any; }; }) => request.user.toString() === user._id.toString())) {
+      throw new Error("User has already requested membership");
+    }
+
+    // Add the user's id to the membership requests array in the community
+    community.membershipRequests.push({ user: user._id, email: cleanuserEmail });
+    await community.save();
+
+    return { message: "Membership request sent successfully" };
+  } catch (error) {
+    console.error("Error requesting membership:", error);
+    throw error;
+  }
+}
+
+export async function deleteMembershipRequest(userId: string, communityId: string) {
+  try {
+    connectToDB();
+
+    // Remove additional characters like inverted commas
+    const cleanUserId = userId.replace(/["']/g, "");
+    const cleanCommunityId = communityId.replace(/["']/g, "");
+
+    // Find the user by their id
+    const user = await User.findOne({ id: cleanUserId });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Find the community by its id
+    const community = await Community.findOne({ id: cleanCommunityId });
+
+    if (!community) {
+      throw new Error("Community not found");
+    }
+
+    // Check if the user's request exists in the membership requests of the community
+    // Find the index of the user's request in the membership requests array
+    const index = community.membershipRequests.findIndex((request: { user: { toString: () => any; }; }) => request.user.toString() === user._id.toString());
+    if (index === -1) {
+      throw new Error("User's membership request not found");
+    }
+
+    // Remove the user's id from the membership requests array in the community
+    community.membershipRequests.splice(index, 1);
+    await community.save();
+
+    return { message: "Membership request canceled successfully" };
+  } catch (error) {
+    console.error("Error canceling membership request:", error);
     throw error;
   }
 }

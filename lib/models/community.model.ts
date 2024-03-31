@@ -32,6 +32,15 @@ const communitySchema = new mongoose.Schema({
       ref: "User",
     },
   ],
+  membershipRequests: [ // New array for storing membership requests
+    {
+      user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      },
+      email: String,
+    },
+  ],
 });
 
 const Community =

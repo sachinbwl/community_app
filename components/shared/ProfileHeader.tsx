@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import SendRequest from "../forms/SendRequest";
 
 
 interface Props {
@@ -10,11 +11,15 @@ interface Props {
     imgUrl: string;
     bio: string;
     type?: 'User' | 'Community';
+    CommunityId?: string;
+    isUserRequested?: boolean;
+    requestEmail?: string;
 };
 
 const ProfileHeader = ({
-    accountId, authUserId, name, username, imgUrl, bio, type,
+    accountId, authUserId, name, username, imgUrl, bio, type, CommunityId ='', isUserRequested=false, requestEmail=''
     }: Props) => {
+        const comId = CommunityId.replace(/["']/g, "");
     return (
         <div className="flex w-full flex-col justify-start">
             <div className="flex items-center justify-between">
@@ -29,7 +34,7 @@ const ProfileHeader = ({
                     </div>
 
                     <div className="flex-1">
-                        <h2 className="text-left text-heading3-bold text-light-1">
+                        <h2 className="text-left text-heading3-bold text-slate-900">
                             {name}
                         </h2>
                         <p className="text-base-medium text-gray-1">
@@ -39,20 +44,43 @@ const ProfileHeader = ({
                 </div>
                 {accountId === authUserId && type !== "Community" && (
                     <Link href='/profile/edit'>
-                        <div className='flex cursor-pointer gap-3 rounded-lg bg-dark-3 px-4 py-2'>
+                        <div className='flex cursor-pointer gap-3 rounded-lg bg-white px-4 py-2'>
                             <Image
                                 src='/assets/edit.svg'
-                                alt='logout'
+                                alt='edit'
                                 width={16}
                                 height={16}
                             />
 
-                            <p className='text-light-2 max-sm:hidden'>Edit</p>
+                            <p className='text-slate-900 max-sm:hidden'>Edit</p>
                         </div>
                     </Link>
                     )}
+                {accountId == authUserId && type =="Community" &&(
+                    <Link href={`/communities/edit/${comId}`}>
+                        <div className="flex cursor-pointer gap-3 rounded-lg bg-white px-4 py-2">
+                        <Image
+                            src='/assets/edit.svg'
+                            alt='edit'
+                            width={16}
+                            height={16}
+                        />
+
+                        <p className='text-slate-900 max-sm:hidden'>Edit</p>
+                        </div>
+                    </Link>
+                )}
+                {accountId !== authUserId && type !=="User" &&(
+                    <SendRequest 
+                        UserId={JSON.stringify(authUserId)}
+                        CommunityId={CommunityId}
+                        authorId={JSON.stringify(accountId)}
+                        isUserRequested={isUserRequested}
+                        requestEmail={requestEmail}
+                    />
+                )}
             </div>
-            <p className="mt-6 max-w-lg text-base-regular text-light-2">
+            <p className="mt-6 max-w-lg text-base-regular text-slate-900">
                 {bio}
             </p>
             <div className="mt-12 h-0.5 w-full bg-dark-3" />

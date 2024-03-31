@@ -7,8 +7,7 @@ function Topbar() {
     return (
         <nav className="topbar">
             <Link href="/" className="flex items-center gap-4">
-            <Image src='/assets/logo1.svg' alt='logo' width={28} height={28} />
-            <p className='text-heading3-bold text-light-1 max-xs:hidden'>BanyanBonds</p>
+            <Image src='/assets/logo1.svg' alt='logo' width={84} height={84} className="rounded-full"/>
             </Link>
             <div className="flex items-center gap-1">
                 <div className="block md:hidden">
@@ -25,11 +24,15 @@ function Topbar() {
                         </SignOutButton>
                     </SignedIn>
                 </div>
+                <Link href="/aboutus" className="text-heading3-bold text-slate-200 font-serif backdrop-blur">About</Link> 
+                <p className='text-heading3-bold text-slate-200 max-xs:hidden font-serif backdrop-blur tracking-wide'>
+                    Banyan Bonds
+                </p>
                 <OrganizationSwitcher
                     appearance={{
-                        baseTheme: dark,
+                        
                         elements: {
-                        organizationSwitcherTrigger: "py-2 px-4",
+                        organizationSwitcherTrigger: "py-2 px-4 text-slate-900 bg-zinc-200 bg-opacity-70",
                         },
                 }}
                 />

@@ -5,6 +5,7 @@ import Thread from "../models/thread.model";
 import User from "../models/user.model";
 import Community from "../models/community.model";
 import { connectToDB } from "../mongoose";
+import mongoose from "mongoose";
 
 
 export async function fetchPosts(pageNumber = 1, pageSize = 20) {
@@ -31,6 +32,11 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
                     model: User,
                     select: "_id name parentId image",
                 }
+            })
+            .populate({
+              path: 'likes' ,
+              model: User,
+              select: "id name image",
             });
 
         const totalPostsCount = await Thread.countDocuments({
@@ -56,6 +62,8 @@ interface Params {
 export async function createThread({ text, author, communityId, path }: Params) {
    try {
     connectToDB();
+    
+    author = author.replace(/^"(.*)"$/, '$1');
 
     const communityIdObject = await Community.findOne(
       { id: communityId },
@@ -187,8 +195,19 @@ export async function fetchThreadById(threadId: string) {
                 select: "_id id name parentId image", // Select only _id and username fields of the author
               },
             },
+            {
+              path: 'likes',
+              model: User,
+              select: "id name image",
+            },
           ],
         })
+        .populate({
+          path: 'likes' ,
+          model: User,
+          select: "id name image",
+        })
+
         .exec();
   
       return thread;
@@ -232,5 +251,178 @@ export async function addCommentToThread(
     revalidatePath(path);
   } catch (error: any) {
     throw new Error(`Error adding comment to thread: ${error.message}`);
+  }
+}
+
+export async function likeThread(threadId: string, userId: string, path: string) {
+  try {
+    console.log("usedId:", userId);
+    console.log("ThreadId:", threadId)
+    connectToDB();
+
+    // Find the thread by its ID
+    const thread = await Thread.findById(threadId);
+
+    if (!thread) {
+      throw new Error("Thread not found");
+    }
+    // Example: Fetching the actual MongoDB ObjectId using the custom user ID
+    const user = await User.findOne({ id: userId }); // Adjust the query according to your schema
+    if (!user) {
+      throw new Error('User not found');
+    }
+    const userIdObject = user._id; // This is the actual ObjectId of the user
+
+    //console.log("UserIdObject:", userIdObject); // Log the userIdObject
+
+    // Initialize a variable to track whether the thread was liked or unliked
+    let actionResult = '';
+
+    // Check if the user has already liked the thread
+    const userAlreadyLikedIndex = thread.likes.findIndex((id: mongoose.Types.ObjectId) => id.equals(userIdObject));
+
+    if (userAlreadyLikedIndex !== -1) {
+      // User has already liked the thread, so remove their like (unlike)
+      thread.likes.splice(userAlreadyLikedIndex, 1);
+      actionResult = 'unliked';
+    } else {
+      // User has not liked the thread yet, so add their like
+      thread.likes.push(userIdObject);
+      actionResult = 'liked';
+    }
+
+    // Save the updated thread to the database
+    await thread.save();
+
+    // Revalidate the page to reflect the updated likes
+    revalidatePath(path);
+
+    return { message: `Thread ${actionResult} successfully.` };
+  } catch (error: any) {
+    throw new Error(`Error updating like status for thread: ${error.message}`);
+  }
+}
+
+export async function getThreadLikes(threadId: string) {
+  try {
+    connectToDB();
+
+    // Find the thread by its ID and populate the likes array to get user details
+    const thread = await Thread.findById(threadId)
+      .populate({
+        path: "likes",
+        model: User, // Assuming "User" is your User model name
+        select: "id name image", // Adjust according to what user information you want to return
+      })
+      .exec();
+
+    if (!thread) {
+      throw new Error("Thread not found");
+    }
+
+    return thread.likes;
+  } catch (error: any) {
+    throw new Error(`Error fetching likes: ${error.message}`);
+  }
+}
+
+export async function reportThread(threadId: string, userId: string, reason: string) {
+  try {
+    connectToDB();
+    // Find the thread by its ID
+    const thread = await Thread.findById(threadId);
+
+    if (!thread) {
+      throw new Error("Thread not found");
+    }
+
+    // Initialize the reports array if it doesn't exist
+    if (!thread.reports) {
+      thread.reports = [];
+    }
+
+    // Add the user's report to the thread's reports array
+    thread.reports.push(reason);
+
+    // Save the updated thread to the database
+    await thread.save();
+    revalidatePath(threadId)
+
+    return { message: "Thread reported successfully." };
+  } catch (error: any) {
+    throw new Error(`Error reporting thread: ${error.message}`);
+  }
+}
+
+export async function getLikes(threadId: string) {
+  try {
+    connectToDB();
+
+    // Find the thread by its ID and populate the likes array to get user details
+    const thread = await Thread.findById(threadId)
+        .populate({
+            path: "likes",
+            model: User, // Assuming "User" is your User model name
+            select: "id name image", // Adjust according to what user information you want to return
+        })
+        .exec();
+
+    if (!thread) {
+        throw new Error("Thread not found");
+    }
+
+    // Map the likes array to include the threadId
+    const likesWithThreadId = thread.likes.map((like: { toObject: () => any; }) => ({
+        ...like.toObject(), // Convert Mongoose document to plain JavaScript object
+        threadId: threadId
+    }));
+
+    return likesWithThreadId;
+} catch (error: any) {
+    throw new Error(`Error fetching likes: ${error.message}`);
+}
+}
+
+export async function lockThread(threadId: string) {
+  try {
+    connectToDB();
+
+    // Find the thread by its id and update the locked field to true
+    const updatedThread = await Thread.findByIdAndUpdate(
+      threadId,
+      { locked: true },
+      { new: true }
+    );
+
+    if (!updatedThread) {
+      throw new Error("Thread not found");
+    }
+
+    return updatedThread;
+  } catch (error) {
+    console.error("Error locking thread:", error);
+    throw error;
+  }
+}
+
+export async function unlockThread(threadId: string) {
+  try {
+    connectToDB();
+
+    // Find the thread by its id and update the locked field to false
+    const updatedThread = await Thread.findByIdAndUpdate(
+      threadId,
+      { locked: false },
+      { new: true }
+    );
+
+    if (!updatedThread) {
+      throw new Error("Thread not found");
+    }
+
+    return updatedThread;
+  } catch (error) {
+    console.error("Error unlocking thread:", error);
+    throw error;
   }
 }

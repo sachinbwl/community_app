@@ -3,7 +3,7 @@ import { fetchPosts } from "@/lib/actions/thread.action";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import Pagination from "@/components/shared/Pagination";
-import { fetchUser } from "@/lib/actions/user.actions";
+import { fetchUser, fetchUserList } from "@/lib/actions/user.actions";
 
 
 async function Home({
@@ -22,6 +22,8 @@ async function Home({
   const userInfo = await fetchUser(user.id);
   if (!userInfo?.onboarded) redirect("/onboarding");
 
+  const userList = await fetchUserList();
+
   return (
     <div>
       <h1 className="head-text text-left">
@@ -29,7 +31,7 @@ async function Home({
       </h1>
       <section className="mt-9 flex flex-col gap-10">
         {result.posts.length === 0 ? (
-          <p className="no-result">No threads found</p>
+          <p className="no-result">No Post found</p>
         ) : (
           <>
             {result.posts.map((post) => (
@@ -43,6 +45,10 @@ async function Home({
                 community={post.community}
                 createdAt={post.createdAt}
                 comments={post.children}
+                likes={post.likes}
+                commentId={JSON.stringify(userInfo._id)}
+                commentImage={userInfo.image}
+                userList={userList}
               />
             ))}
           </>

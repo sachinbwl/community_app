@@ -131,7 +131,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
                   />
                 )}
               </FormLabel>
-              <FormControl className="flex-1 text-base-semibold text-gray-200">
+              <FormControl className="flex-1 text-base-semibold text-gray-400">
                 <Input
                     type='file'
                     accept='image/*'
@@ -150,7 +150,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
           name="name"
           render={({ field }) => (
             <FormItem className="flex flex-col w-full gap-3">
-              <FormLabel className="text-base-semibold text-light-2">
+              <FormLabel className="text-base-semibold text-slate-900">
                 Name
               </FormLabel>
               <FormControl>
@@ -170,7 +170,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
           name='username'
           render={({ field }) => (
             <FormItem className='flex flex-col w-full gap-3'>
-              <FormLabel className='text-base-semibold text-light-2'>
+              <FormLabel className='text-base-semibold text-slate-900'>
                 Username
               </FormLabel>
               <FormControl>
@@ -190,7 +190,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
           name='bio'
           render={({ field }) => (
             <FormItem className='flex flex-col w-full gap-3'>
-              <FormLabel className='text-base-semibold text-light-2'>
+              <FormLabel className='text-base-semibold text-slate-900'>
                 Bio
               </FormLabel>
               <FormControl>

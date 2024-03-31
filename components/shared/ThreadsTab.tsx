@@ -1,4 +1,4 @@
-import { fetchUserPosts } from "@/lib/actions/user.actions";
+import { fetchUser, fetchUserPosts } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
 import ThreadCard from "@/components/cards/ThreadCard";
 import { fetchCommunityPosts } from "@/lib/actions/community.actions";
@@ -28,7 +28,14 @@ interface Result {
           image: string;
         };
       }[];
+      likes: {
+        id: string; // User ID
+        name: string; // User's name
+        image: string; // User's image URL
+    }[]; // Added likes array in Thread interface 
     }[];
+    commentId: string;
+    commentImage: string
   }
 
 interface Props {
@@ -39,6 +46,8 @@ interface Props {
 
 const ThreadsTab = async ({ currentUserId, accountId, accountType }: Props) => {
     let result: Result;
+
+    const userInfo = await fetchUser(currentUserId);
 
     if(accountType === 'Community') {
         result = await fetchCommunityPosts(accountId);
@@ -71,6 +80,9 @@ const ThreadsTab = async ({ currentUserId, accountId, accountType }: Props) => {
                 }
                 createdAt={thread.createdAt}
                 comments={thread.children}
+                likes={thread.likes}
+                commentId={JSON.stringify(userInfo._id)}
+                commentImage={userInfo.image}
               />
             ))}
         </section>

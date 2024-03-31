@@ -5,36 +5,36 @@
 @layer components {
   /* main */
   .main-container {
-    @apply flex min-h-screen flex-1 flex-col items-center bg-dark-1 px-6 pb-10 pt-28 max-md:pb-32 sm:px-10;
+    @apply flex min-h-screen flex-1 flex-col items-center bg-white px-6 pb-10 pt-28 max-md:pb-32 sm:px-10;
   }
 
   /* Head Text */
   .head-text {
-    @apply text-heading2-bold text-light-1;
+    @apply text-heading2-bold text-dark-1;
   }
 
   /* Activity */
   .activity-card {
-    @apply flex items-center gap-2 rounded-md bg-dark-2 px-7 py-4;
+    @apply flex items-center gap-2 rounded-md bg-white px-7 py-4 text-slate-900;
   }
 
   /* No Result */
   .no-result {
-    @apply text-center !text-base-regular text-light-3;
+    @apply text-center !text-base-regular text-slate-900;
   }
 
   /* Community Card */
   .community-card {
-    @apply w-full rounded-lg bg-dark-3 px-4 py-5 sm:w-96;
+    @apply w-full rounded-lg border border-green-500 bg-white shadow-md px-4 py-5 sm:w-96;
   }
 
   .community-card_btn {
-    @apply rounded-lg bg-primary-500 px-5 py-1.5 text-small-regular !text-light-1 !important;
+    @apply rounded-lg bg-primary-500 px-5 py-1.5 text-small-regular text-slate-900 !important;
   }
 
   /* thread card  */
   .thread-card_bar {
-    @apply relative mt-2 w-0.5 grow rounded-full bg-neutral-800;
+    @apply relative mt-2 w-0.5 grow rounded-full bg-white border border-white shadow-md;
   }
 
   /* User card */
@@ -47,19 +47,27 @@
   }
 
   .user-card_btn {
-    @apply h-auto min-w-[74px] rounded-lg bg-primary-500 text-[12px] text-light-1 !important;
+    @apply h-auto min-w-[74px] rounded-lg bg-primary-500 text-[12px] !text-light-1 !important;
   }
 
   .searchbar {
-    @apply flex gap-1 rounded-lg bg-dark-3 px-4 py-2;
+    @apply flex gap-1 rounded-lg bg-white border border-green-800 px-4 py-2;
   }
 
   .searchbar_input {
-    @apply border-none bg-dark-3 text-base-regular text-light-4 outline-none !important;
+    @apply border-none bg-white text-base-regular text-slate-900 outline-none !important;
   }
 
   .topbar {
-    @apply fixed top-0 z-30 flex w-full items-center justify-between bg-dark-2 px-6 py-3;
+    @apply fixed top-0 z-30 flex w-full items-center justify-between px-6 py-3;
+    /* background-color: rgba(24, 159, 90, 1); /* Light green with transparency */
+    /* border-top: 2px solid rgba(0, 255, 0, 0.3); /* Light green top border */
+    /* border-bottom: 2px solid rgba(0, 255, 0, 0.3); /* Light green bottom border */
+    background-image: url('../public/bgimages/navbarbg.jpg'); /* Change 'your-image-name.png' to your image file name */
+    background-size: cover;
+    background-repeat: no-repeat;
+    backdrop-filter: blur(10px); /* Adds a glassy effect */
+    animation: positionChange 20s infinite;
   }
 
   .bottombar {
@@ -75,7 +83,10 @@
   }
 
   .leftsidebar {
-    @apply sticky left-0 top-0 z-20 flex h-screen w-fit flex-col justify-between overflow-auto border-r border-r-dark-4 bg-dark-2 pb-5 pt-28 max-md:hidden;
+    @apply sticky left-0 top-0 z-20 flex h-screen w-fit flex-col justify-between overflow-auto border-r border-r-green-800 pb-5 pt-28 max-md:hidden;
+    background-color: rgba(208, 224, 208, 0.1); /* Light green with transparency */
+    border-right: 2px solid rgba(34, 84, 61, 1); /* Light green right border */
+    backdrop-filter: blur(10px); /* Adds a glassy effect */
   }
 
   .leftsidebar_link {
@@ -87,7 +98,11 @@
   }
 
   .rightsidebar {
-    @apply sticky right-0 top-0 z-20 flex h-screen w-fit flex-col justify-between gap-12 overflow-auto border-l border-l-dark-4 bg-dark-2 px-10 pb-6 pt-28 max-xl:hidden;
+    @apply sticky right-0 top-0 z-20 flex h-screen w-fit flex-col justify-between gap-12 overflow-auto border-l border-l-dark-4 px-10 pb-6 pt-28 max-xl:hidden;
+    background-color: rgba(223, 235, 223, 0.1); /* Light green with transparency */
+    border-left: 2px solid rgba(34, 84, 61, 1); /* Light green left border */
+    backdrop-filter: blur(10px); /* Adds a glassy effect */
+    
   }
 }
 
@@ -103,11 +118,11 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: #09090a;
+    background: transparent;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #5c5c7b;
+    background: transparent;
     border-radius: 50px;
   }
 
@@ -131,7 +146,7 @@
 
 /* Tab */
 .tab {
-  @apply flex min-h-[50px] flex-1 items-center gap-3 bg-dark-2 text-light-2 data-[state=active]:bg-[#0e0e12] data-[state=active]:text-light-2 !important;
+  @apply flex min-h-[50px] flex-1 items-center gap-3 bg-white text-slate-900 data-[state=active]:bg-[#4caf50] data-[state=active]:text-slate-900 data-[state=active]:rounded-full data-[state=active]:shadow-md !important;
 }
 
 .no-focus {
@@ -140,7 +155,7 @@
 
 /* Account Profile  */
 .account-form_image-label {
-  @apply flex h-24 w-24 items-center justify-center rounded-full bg-dark-4 !important;
+  @apply flex h-24 w-24 items-center justify-center rounded-full bg-white !important;
 }
 
 .account-form_image-input {
@@ -148,14 +163,146 @@
 }
 
 .account-form_input {
-  @apply border border-dark-4 bg-dark-3 text-light-1 !important;
+  @apply border border-dark-4 bg-white text-slate-900 !important;
 }
 
 /* Comment Form */
 .comment-form {
-  @apply mt-10 flex items-center gap-4 border-y border-y-dark-4 py-5 max-xs:flex-col !important;
+  @apply mt-10 flex items-center gap-4 border-y border-y-white max-xs:flex-col !important;
 }
 
 .comment-form_btn {
-  @apply rounded-3xl bg-primary-500 px-8 py-2 !text-small-regular text-light-1 max-xs:w-full !important;
+  @apply rounded-3xl bg-primary-500 px-8 py-2 !text-small-regular text-slate-900 max-xs:w-full !important;
 }
+
+.comment-form-container {
+  background-color: #ffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 18px;
+  margin-top: 0;
+}
+
+
+.hidden {
+  display: none;
+}
+
+.visible {
+  display: block;
+}
+
+/* activity box container */
+.activity-box {
+  padding: 20px;
+  border: 1px solid #ccc; /* Example border */
+  border-radius: 8px;
+  max-height: 300px; /* Example fixed height */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.box-title {
+  font-size: 18px;
+  margin-bottom: 10px;
+  position: sticky;
+  top: 0;
+  background-color: white; /* Ensure it blends with the background */
+  z-index: 1; /* Ensure it appears above other content */
+}
+
+.no-activity-text {
+  text-align: center;
+}
+
+.activity-box {
+  margin-bottom: 20px; /* Adjust the margin to create space between boxes */
+}
+
+/* Report Form styling */
+.report-form {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+  background: #fff;
+  color: #000;
+}
+
+.report-form select {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+}
+
+.submitted-message {
+  margin-top: 10px;
+  color: #000;
+  font-size: 14px; /* Smaller font size */
+}
+
+.buttons button {
+  background: #189f5a;
+  color: #374151; /* Slate-900 */
+  margin-right: 5px;
+  border: none;
+  padding: 6px 10px; /* Adjust padding for smaller buttons */
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(24, 159, 90, 0.2); /* Glow effect */
+  font-size: 14px; /* Adjust font size */
+}
+
+.buttons button:last-child {
+  margin-right: 0; /* Remove margin for the last button in a group */
+}
+
+.close-button {
+  background: #189f5a; /* Change background color for the close button */
+  color: #e7e8eb; /* Slate-900 */
+  border: none;
+  padding: 6px 10px; /* Adjust padding for smaller button */
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(24, 159, 90, 0.2); /* Glow effect */
+  font-size: 14px; /* Adjust font size */
+}
+
+.thank-you-message {
+  font-size: 16px;
+  color: #333;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+
+/* Define keyframes for position change */
+@keyframes positionChange {
+  0% {
+    background-position: 70% 70%;
+  }
+  50% {
+    background-position: 75% 75%;
+  }
+  100% {
+    background-position: 70% 70%;
+  }
+}
+
+.bg-image {
+  background-image: url('../public/bgimages/bgpages.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: fit;
+}
+
+@font-face {
+  font-family: 'IMFellGreatPrimerSC';
+  src: url('../public/fonts/IMFellGreatPrimerSC-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-logo {
+  font-family: 'IMFellGreatPrimerSC', serif;
+}
+

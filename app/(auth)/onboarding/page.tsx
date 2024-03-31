@@ -24,10 +24,10 @@ async function Page() {
             <h1 className="head-text">
                 Onboarding
             </h1>
-            <p className="mt-3 text-base-regular text-light-2">
+            <p className="mt-3 text-base-regular text-slate-900">
                 Complete your profile now to use BanyanBonds.
             </p>
-            <section className="mt-9 bg-dark-2 p-10">
+            <section className="mt-9 bg-white p-10">
                 <AccountProfile 
                     user = { userData }
                     btnTitle = "Continue"
