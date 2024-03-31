@@ -24,7 +24,7 @@ function Topbar() {
                         </SignOutButton>
                     </SignedIn>
                 </div>
-                <Link href="/aboutus" className="text-heading3-bold text-slate-200 font-serif backdrop-blur">About</Link> 
+                <Link href="/aboutus" className="text-sm text-slate-200 font-serif backdrop-blur">About</Link> 
                 <p className='text-heading3-bold text-slate-200 max-xs:hidden font-serif backdrop-blur tracking-wide'>
                     Banyan Bonds
                 </p>
