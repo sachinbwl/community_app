@@ -70,7 +70,7 @@ const ProfileHeader = ({
                         </div>
                     </Link>
                 )}
-                {accountId !== authUserId && type !=="User" &&(
+                {accountId !== authUserId && type =="Community" &&(
                     <SendRequest 
                         UserId={JSON.stringify(authUserId)}
                         CommunityId={CommunityId}
